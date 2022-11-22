@@ -1,0 +1,289 @@
+<div *ngIf="!enviado">
+  <div class="divImg mt-3"><img src="assets/logo.jpg" class="img"></div>
+  <h2 class="card-title text-center mt-3" id="titulo">Tribolão da Copa</h2>
+  <hr>
+  <h6>1°: Informe seu nome e célula</h6>
+  <h6>2°: Selecione os classificados de cada grupo</h6>
+  <h6>3°: Selecione os classificados de cada jogo das oitavas</h6>
+  <h6>4°: Selecione os classificados de cada jogo das quartas</h6>
+  <h6>5°: Selecione os classificados de cada jogo das semi-finais</h6>
+  <h6>6°: Selecione o vencedor da final e o vencedor da disputa de terceiro lugar</h6>
+  <hr>
+
+  <div class="col-sm-12" style="text-align: center;" *ngIf="carregando">
+    <div class="lds-ellipsis">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
+  <form class="my-login-validation" *ngIf="!carregando">
+
+    <div class="alert alert-danger" role="alert" *ngIf="error">
+      {{errorMessage}} <i class="fa fa-exclamation-circle float-right"></i>
+    </div>
+
+    <div *ngIf="faseInscrito">
+
+      <div class="row">
+        <h5 for="Nome" class="card-title">Nome Completo</h5>
+        <br><br>
+
+        <div class="form-group col-sm-12" (click)="error = false">
+          <div class="form-group">
+            <input id="Nome" type="text" name="name" maxlength="30" class="form-control" [(ngModel)]="inscrito.nome"
+              required (focus)="error = false" oninput="validity.valid||(value='');">
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <h5 for="Nome" class="card-title">Célula</h5>
+        <br><br>
+
+        <div class="form-group col-sm-12" (click)="error = false">
+          <div class="form-group">
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+              [(ngModel)]="inscrito.celula" name="celula">
+              <option *ngFor="let celula of celulas" [selected]="">
+                {{celula}}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group m-0">
+        <button (click)="verificaInscricao()" type="button" id="btnEnviar" class="btn btn-success btn-block">
+          Ir para a Fase de Grupos
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="faseGrupos">
+
+      <div *ngFor="let grupo of grupos">
+        <div class="row">
+          <h5 for="Nome" class="card-title text-center">{{grupo.titulo}}</h5>
+          <br><br>
+
+          <h6 for="Nome" class="card-title">Primeiro</h6>
+
+          <div class="form-group col-sm-12" (click)="error = false">
+            <div class="form-group">
+              <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+                [(ngModel)]="grupo.primeiro" name="celula">
+                <option *ngFor="let selecao of grupo.selecoes" [ngValue]="selecao" [selected]="">
+                  {{selecao}}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <h6 for="Nome" class="card-title">Segundo</h6>
+
+          <div class="form-group col-sm-12" (click)="error = false">
+            <div class="form-group">
+              <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+                [(ngModel)]="grupo.segundo" name="celula">
+                <option *ngFor="let selecao of grupo.selecoes" [ngValue]="selecao">
+                  {{selecao}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group m-0">
+        <button (click)="preencherOitavas();" type="button" id="btnEnviar" class="btn btn-success btn-block">
+          Ir para as Oitavas
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="faseOitavas">
+      <div *ngFor="let oitava of oitavas">
+        <div class="row">
+          <h4 for="Nome" class="card-title text-center">{{oitava.jogo}}</h4>
+          <br><br>
+
+          <h5 for="Nome" class="card-title text-center">{{oitava.time1 + ' X ' + oitava.time2}}</h5>
+          <br>
+
+          <h6 for="Nome" class="card-title">Vencedor</h6>
+
+          <div class="form-group col-sm-12" (click)="error = false">
+            <div class="form-group">
+              <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+                [(ngModel)]="oitava.vencedor" name="celula">
+                <option [ngValue]="oitava.time1" [selected]="">
+                  {{oitava.time1}}
+                </option>
+                <option [ngValue]="oitava.time2" [selected]="">
+                  {{oitava.time2}}
+                </option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-group m-0">
+        <button (click)="preencherQuartas();" type="button" id="btnEnviar" class="btn btn-success btn-block">
+          Ir para as Quartas
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="faseQuartas">
+      <div *ngFor="let quarta of quartas">
+        <div class="row">
+          <h4 for="Nome" class="card-title text-center">{{quarta.jogo}}</h4>
+          <br><br>
+
+          <h5 for="Nome" class="card-title text-center">{{quarta.time1 + ' X ' + quarta.time2}}</h5>
+          <br>
+
+          <h6 for="Nome" class="card-title">Vencedor</h6>
+
+          <div class="form-group col-sm-12" (click)="error = false">
+            <div class="form-group">
+              <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+                [(ngModel)]="quarta.vencedor" name="celula">
+                <option [ngValue]="quarta.time1" [selected]="">
+                  {{quarta.time1}}
+                </option>
+                <option [ngValue]="quarta.time2" [selected]="">
+                  {{quarta.time2}}
+                </option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-group m-0">
+        <button (click)="preencherSemis();" type="button" id="btnEnviar" class="btn btn-success btn-block">
+          Ir para as Semi-Finais
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="faseSemifinais">
+      <div *ngFor="let semi of semis">
+        <div class="row">
+          <h4 for="Nome" class="card-title text-center">{{semi.jogo}}</h4>
+          <br><br>
+
+          <h5 for="Nome" class="card-title text-center">{{semi.time1 + ' X ' + semi.time2}}</h5>
+          <br>
+
+          <h6 for="Nome" class="card-title">Vencedor</h6>
+
+          <div class="form-group col-sm-12" (click)="error = false">
+            <div class="form-group">
+              <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+                [(ngModel)]="semi.vencedor" name="celula">
+                <option [ngValue]="semi.time1" [selected]="">
+                  {{semi.time1}}
+                </option>
+                <option [ngValue]="semi.time2" [selected]="">
+                  {{semi.time2}}
+                </option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-group m-0">
+        <button (click)="preencherFinal();" type="button" id="btnEnviar"
+          class="btn btn-success btn-block">
+          Ir para as Finais
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="faseFinais">
+      <div *ngFor="let final of final">
+        <div class="row">
+          <h4 for="Nome" class="card-title text-center">Final</h4>
+          <br><br>
+
+          <h5 for="Nome" class="card-title text-center">{{final.time1 + ' X ' + final.time2}}</h5>
+          <br>
+
+          <h6 for="Nome" class="card-title">Vencedor</h6>
+
+          <div class="form-group col-sm-12" (click)="error = false">
+            <div class="form-group">
+              <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+                [(ngModel)]="final.vencedor" name="celula">
+                <option [ngValue]="final.time1" [selected]="">
+                  {{final.time1}}
+                </option>
+                <option [ngValue]="final.time2" [selected]="">
+                  {{final.time2}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngFor="let terceiro of terceiroLugar">
+        <div class="row">
+          <h4 for="Nome" class="card-title text-center">Terceiro Lugar</h4>
+          <br><br>
+
+          <h5 for="Nome" class="card-title text-center">{{terceiro.time1 + ' X ' + terceiro.time2}}</h5>
+          <br>
+
+          <h6 for="Nome" class="card-title">Vencedor</h6>
+
+          <div class="form-group col-sm-12" (click)="error = false">
+            <div class="form-group">
+              <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+                [(ngModel)]="terceiro.vencedor" name="celula">
+                <option [ngValue]="terceiro.time1" [selected]="">
+                  {{terceiro.time1}}
+                </option>
+                <option [ngValue]="terceiro.time2" [selected]="">
+                  {{terceiro.time2}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group m-0">
+        <button (click)="finalizarBolao()" type="button" id="btnEnviar" class="btn btn-success btn-block">
+          Finalizar Bolão
+        </button>
+      </div>
+
+    </div>
+
+  </form>
+  <br>
+  <hr>
+</div>
+
+<div *ngIf="enviado">
+  <app-sucesso></app-sucesso>
+</div>
+
+<div class="social-links mt-3 text-center">
+  <a href="https://matheuspcouto.github.io/" target="_blank"><i class="fa fa-user"></i></a>
+  <a href="https://www.instagram.com/matheuspcouto/?hl=pt-br" target="_blank"><i class="fa fa-instagram"></i></a>
+  <a href="https://www.linkedin.com/in/matheuspcouto/" target="_blank"><i class="fa fa-linkedin"></i></a>
+  <br><br> Desenvolvido por Matheus Pimentel Do Couto - 2022
+</div>

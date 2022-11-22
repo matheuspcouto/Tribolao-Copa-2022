@@ -16,16 +16,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'Tribolao-Copa-2022'`, () => {
+  it(`should have as title 'Inscricao-Tribo-Intercelulas'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('Tribolao-Copa-2022');
+    expect(app.title).toEqual('Inscricao-Tribo-Intercelulas');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('Tribolao-Copa-2022 app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('Inscricao-Tribo-Intercelulas app is running!');
   });
 });
