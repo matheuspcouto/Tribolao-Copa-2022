@@ -6,5 +6,5 @@ export const environment = {
   production: false,
 };
 
-// ng build --base-href="https://matheuspcouto.github.io/Acampamento-Tribo-Soma/"
-// npx angular-cli-ghpages --dir=dist/acampamento-tribo-soma
+// ng build --base-href="https://matheuspcouto.github.io/Tribolao-Copa-2022/"
+// npx angular-cli-ghpages --dir=dist/tribolao-copa-2022
