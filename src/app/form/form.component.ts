@@ -57,12 +57,14 @@ export class FormComponent implements OnInit {
     if (this.inscrito.nome?.length == 0 || this.inscrito.nome == null) {
       this.errorMessage = 'O nome não pode ficar em branco!';
       this.error = true;
+      this.carregando = false;
       return;
     }
 
     if (this.inscrito.celula?.length == 0 || this.inscrito.celula == null) {
       this.errorMessage = 'A célula não pode ficar em branco!';
       this.error = true;
+      this.carregando = false;
       return;
     }
 
@@ -74,20 +76,21 @@ export class FormComponent implements OnInit {
   preencherOitavas() {
     this.carregando = true;
 
-    console.table(this.grupos);
-
     if (this.grupos.some((i) => i.primeiro == null || i.segundo == null)) {
       this.error = true;
       this.errorMessage = 'É preciso selecionar os times';
+      this.carregando = false;
       return;
     }
 
     if (this.grupos.some((i) => i.primeiro == i.segundo)) {
       this.error = true;
-      this.errorMessage =
-        'Não pode selecionar o mesmo time nas duas posições !';
+      this.errorMessage = 'Não pode selecionar o mesmo time nas duas posições !';
+      this.carregando = false;
       return;
     }
+
+    console.table(this.grupos);
 
     // Grupo A
     let a1 = this.grupos[0].primeiro;
@@ -176,14 +179,14 @@ export class FormComponent implements OnInit {
   preencherQuartas() {
     this.carregando = true;
 
-    console.table(this.oitavas);
-
     if (this.oitavas.some((i) => i.vencedor == null)) {
       this.error = true;
       this.errorMessage = 'É preciso selecionar os times';
       this.carregando = false;
       return;
     }
+
+    console.table(this.oitavas);
 
     // Jogo 1
     let vencedorJogo1 = this.oitavas[0].vencedor;
@@ -240,14 +243,14 @@ export class FormComponent implements OnInit {
   preencherSemis() {
     this.carregando = true;
 
-    console.table(this.quartas);
-
     if (this.quartas.some((i) => i.vencedor == null)) {
       this.error = true;
       this.errorMessage = 'É preciso selecionar os times';
       this.carregando = false;
       return;
     }
+
+    console.table(this.quartas);
 
     // Jogo 1
     let vencedorJogo1 = this.quartas[0].vencedor;
@@ -286,23 +289,17 @@ export class FormComponent implements OnInit {
   preencherFinal() {
     this.carregando = true;
 
-    this.semis[0].perdedor =
-      this.semis[0].vencedor == this.semis[0].time1
-        ? this.semis[0].time2
-        : this.semis[0].time1;
-    this.semis[1].perdedor =
-      this.semis[1].vencedor == this.semis[1].time1
-        ? this.semis[1].time2
-        : this.semis[1].time1;
-
-    console.table(this.semis);
-
     if (this.semis.some((i) => i.vencedor == null)) {
       this.error = true;
       this.errorMessage = 'É preciso selecionar os times';
       this.carregando = false;
       return;
     }
+
+    this.semis[0].perdedor = this.semis[0].vencedor == this.semis[0].time1 ? this.semis[0].time2 : this.semis[0].time1;
+    this.semis[1].perdedor = this.semis[1].vencedor == this.semis[1].time1 ? this.semis[1].time2 : this.semis[1].time1;
+
+    console.table(this.semis);
 
     // Jogo 1
     let vencedorJogo1 = this.semis[0].vencedor;
@@ -356,10 +353,7 @@ export class FormComponent implements OnInit {
 
     this.carregando = true;
 
-    this.final[0].segundoLugar =
-      this.final[0].vencedor == this.final[0].time1
-        ? this.final[0].time2
-        : this.final[0].time1;
+    this.final[0].segundoLugar = this.final[0].vencedor == this.final[0].time1 ? this.final[0].time2 : this.final[0].time1;
 
     console.table(this.final);
     console.table(this.terceiroLugar);
@@ -385,12 +379,19 @@ export class FormComponent implements OnInit {
       this.inscrito.semis += semi;
     }
 
+    // Terceiro Lugar
+    for (let i = 0; i < this.terceiroLugar.length; i++) {
+      const element = this.terceiroLugar[i];
+      var terceiro = element.time1 + ' X ' + element.time2 + ' (' + element.vencedor + ')';
+      this.inscrito.terceiroLugar += terceiro;
+    }
+
     // Final
     for (let i = 0; i < this.final.length; i++) {
       const element = this.final[i];
       var final = element.time1 + ' X ' + element.time2 + ' (' + element.vencedor + ')';
       this.inscrito.final += final;
-      this.inscrito.vencedores = '1°: ' + element.vencedor + ' 2°: ' + element.segundoLugar + ' 3°: ' + this.terceiroLugar[0].vencedor;
+      this.inscrito.vencedores = '1°: ' + element.vencedor + ' | 2°: ' + element.segundoLugar + ' | 3°: ' + this.terceiroLugar[0].vencedor;
     }
 
     this.sheetService.getInscritoByNome(this.inscrito.nome).subscribe({
@@ -502,5 +503,6 @@ export class Inscrito {
   quartas?: String = '';
   semis?: String = '';
   final?: String = '';
+  terceiroLugar?: String = '';
   vencedores?: String;
 }
