@@ -75,7 +75,7 @@
 .social-links a {
   font-size: 18px;
   display: inline-block;
-  background: #050505;
+  background: #06027A;
   color: #E5E5E5;
   line-height: 1;
   padding: 8px 0;
@@ -89,7 +89,7 @@
 
 .social-links a:hover {
   background: #E5E5E5;
-  color: #050505;
+  color: #06027A;
   text-decoration: none;
 }
 
